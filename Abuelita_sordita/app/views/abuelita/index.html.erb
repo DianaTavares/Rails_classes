@@ -1,0 +1,19 @@
+<h1>Abuelita Sordita</h1>
+
+<!-- a diferencia del ejercicio de blog, en este usamos un formulario que nos permite especificar la ruta a la que queremos enviarle la informacion -->
+<%= form_tag ("/abuelita"), method: "post" do %>
+
+    <!-- :new_message es el nombre que pondremos dentro del params para recuperar este valor-->
+    <%= label_tag(:new_message, "Dile algo a tu abuelita:")  %>
+  <%= text_field_tag (:new_message) %>
+
+  <%= submit_tag ("Dilo!") %>
+
+<% end %>
+
+<!-- esta variable es enviada a la vista desde el controlador. aqui se guarda la respuesta de la abuela., por alguna extraña razon esta en un metodo llamado "create" -->
+<%if @new_message %>
+    <br>
+    <p> Respuesta de abuelita: <%=@new_message %>  </p>
+
+<%end%>
