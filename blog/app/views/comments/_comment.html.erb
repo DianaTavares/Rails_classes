@@ -1,0 +1,17 @@
+<!--Parcial que muestra los comentarios que tiene un articulo, sera llamada en la vista de show de articulo-->
+<p>
+  <strong>Commenter:</strong>
+  <%= comment.commenter %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= comment.body %>
+</p>
+
+<!--Esto es un link para eliminar un comentario -->
+<p>
+  <%= link_to 'Eliminar Comentario', [comment.article, comment],
+               method: :delete,
+               data: { confirm: '¿Seguro que quieres eliminar?' } %>
+</p>
