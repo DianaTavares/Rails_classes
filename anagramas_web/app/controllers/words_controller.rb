@@ -19,8 +19,7 @@ class WordsController < ApplicationController
     word = canonical(word)
     #buscamos en la base de datos todos los registros cuya canonica sea igual a la de la palabra ingresada por el usuario.
     anagrams = Word.where("canonical = ?", word)
-    p"l"*50
-    p anagrams
+    
   end
 
   #metodo que crea la canonica de una palabra
