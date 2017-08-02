@@ -1,0 +1,10 @@
+<h1>Bienvenido a Anagramas!!</h1>
+
+<%= form_tag ("/anagrams"), method: "post" do %>
+
+    <%= label_tag(:new_word, "Buscar anagramas de:")  %>
+  <%= text_field_tag (:new_word) %>
+
+  <%= submit_tag ("Buscar!") %>
+
+<% end %>

@@ -1,0 +1,28 @@
+<h1>Bienvenido a Anagramas!!</h1>
+
+<%= form_tag ("/anagrams"), method: "post" do %>
+
+    <%= label_tag(:new_word, "Buscar anagramas:")  %>
+  <%= text_field_tag (:new_word) %>
+
+  <%= submit_tag ("Buscar!!") %>
+
+<% end %>
+
+<h1>Anagramas encontrados!</h1>
+
+<% if @anagrams.length > 1 %>
+  <p>Estos son los anagramas para <%= @new_word %>:</p>
+
+  <ul>
+      <% @anagrams.each do |word|%>
+
+          <li><%= word.word %></li>
+      <% end %>
+    </ul>
+
+<% else %>
+
+  <p> lo sentimos, no hay anagramas para esa palabra </p>
+
+<% end %>
