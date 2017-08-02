@@ -1,0 +1,30 @@
+<h1>Gracias por usar Bitly!!</h1>
+
+<%= form_for :url, url: urls_path do |f| %>
+  <p>
+    <%= f.label :large, 'Url original:' %>
+    <%= f.text_field :large %>
+  </p>
+
+  <p>
+    <%= f.submit "Hacer pequeña!!" %>
+  </p>
+<% end %>
+<br>
+<%if @urls %>
+  <h1>Urls minis Creadas!!</h1>
+  <table>
+    <tr>
+      <th> id </th>
+      <th> mini_url </th>
+      <th> veces visitado </th>
+    </tr>
+    <%@urls.reverse.each do |url|%>
+      <tr>
+        <th><%=url.id%></th>
+        <th><a href="/<%=url.id%>" target="blank" ><%=url.short%></a></th>
+        <th><%=url.counter%></th>
+      </tr>
+    <%end%>
+  </table>
+<%end%>

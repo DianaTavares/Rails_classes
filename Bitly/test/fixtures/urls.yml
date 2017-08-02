@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  large: MyString
+  short: MyString
+  counter: 1
+
+two:
+  large: MyString
+  short: MyString
+  counter: 1
