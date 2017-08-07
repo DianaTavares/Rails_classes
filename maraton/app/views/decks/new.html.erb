@@ -1,0 +1,11 @@
+<div class="jumbotron">
+    <h1>Crea un nuevo Deck!</h1>
+</div>
+
+<%= form_for :decks, url: create_deck_path do |f| %>
+  <%= f.label :name, 'Nombre del nuevo Deck' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :name %><br>
+      <br>
+    <%= f.submit "crear preguntas"%>
+
+  <% end %>

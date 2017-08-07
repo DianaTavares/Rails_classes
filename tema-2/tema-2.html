@@ -1,0 +1,234 @@
+<xmp theme="united" style="display:none;">
+#Anagrams with Rails
+
+En este ejercicio vamos a crear una aplicación web utilizando una Base de Datos y Ruby on Rails.
+
+Tu aplicación aceptará a través de un formulario de HTML una palabra y regresará una lista de anagramas de la misma. Sino sabes que es un anagrama revisa este link: [Anagrama](https://es.wikipedia.org/wiki/Anagrama).
+
+Es importante que pienses como comprobarás que una palabra es un anagrama de otra
+
+## Objetivos Académicos
+
+- Conocer el framework Ruby on Rails
+- Utilizar el patrón de MVC en el desarrollo de aplicaciones web
+
+
+## Introducción
+
+Ruby on Rails es un framework de desarrollo web que fue creado sobre Ruby. Estas herramientas están diseñadas para hacer aplicaciones web de manera sencilla al manejar una estructura y lenguaje muy fácil de entender, permitiendo escribir menos código y obtener resultados más rápidos. La filosofía de Rails se basa en dos principios:
+
+- **Don't repeat yourself:** Se trata de crear código reusable que puede ser mantenible, extensivo y menos propenso a errores.
+- **Convention Over Configuration:** Es una idea que establece que no tiene mucho sentido preocuparse por la configuración, sino que siguiendo las convenciones puedes enfocarte primordialmente en desarrollar código y resolver problemas.
+
+Esta aplicación tiene todos los elementos necesarios para ser diseñada utilizando el concepto de [MVC](http://c2.com/cgi/wiki?ModelViewController).
+
+
+##Modelo - Vista - Controlador
+
+> An easy way to understand MVC: the model is the data, the view is the window on the screen, and the controller is the glue between the two.
+> Connelly Barnes
+
+```Ruby
+
+              Actualiza						   Acción de Usuario
+         <----------------					   <---------------
+Modelo 			              Controlador 							 Vista
+        ----------------->					    ---------------->
+               Notifica							   Actualiza
+
+```
+## Actividades
+
+### Iniciando Rails
+
+Vamos a generar un nuevo proyecto de Rails, para ello debes abrir tu *Terminal* e introducir el siguiente comando: 
+
+```sh
+$ rails new anagrams_web
+```
+
+Esto crea en la carpeta donde estés colocado la estructura de archivos que se utilizará en el desarrollo del programa, si quieres comprender esta estructura puedes checar su [documentación](http://guides.rubyonrails.org/getting_started.html#creating-the-blog-application).
+
+Para colocarte dentro de tu aplicación debes navegar usando el siguiente comando en tu terminal: 
+
+```sh
+$ cd anagrams_web
+```
+
+Ejecuta `$ bundle install`, esto lee el archivo Gemfile, el cual contiene las gemas que utilizaremos en nuestro proyecto. Una gema es una librería que contiene código que ejecuta ciertas funcionalidades y que alguien más ya desarrolló por nosotros.
+
+En la carpeta `app` encontrarás la estructura principal con la que trabajarás todos tus programas, dentro de ella encontrás principalmente tus modelos, vistas y controladores, puedes visitar este link para comprender mejor el patrón [MVC](http://www.tutorialspoint.com/mvc_framework/mvc_framework_introduction.htm). Revisa este otro link para comprender mejor el [MVC](https://betterexplained.com/articles/intermediate-rails-understanding-models-views-and-controllers/
+).
+
+En este momento puedes visualizar tu aplicación al levantar el servidor de Rails ejecutando el siguiente comando `$ rails server` y entrando en tu navegador a [`http://localhost:3000`](http://localhost:3000), esto te lleva a la pantalla de bienvenida para cualquier aplicación de Rails.
+
+### MVC de tu aplicación
+
+#### Modelo
+
+La siguiente parte es generar los archivos que le darán funcionalidad a tu aplicación, empezaremos por crear un modelo y su migración para almacenar las palabras del diccionario, una migración es un archivo que modifica tu base de datos, esto lo haremos al ejecutar:
+
+```sh
+$ rails generate model word word:string canonical:string 
+```
+
+En la terminal, esta linea le especifica a Rails que tu modelo tiene dos atributos, `word` que es la palabra del diccionario y `canonical` en la cual guardarás la palabra ordenada para su uso en tu aplicación.
+
+Para crear la tabla en tu DB vamos a ejecutar el archivo de migración que acabamos de crear. Ejecuta `$ rake db:migrate`
+
+En esta parte revisa el concepto de [Model](https://www.sitepoint.com/building-your-first-rails-application-models). 
+
+#### Controlador
+Crearemos un archivo controlador que contendrá las funciones de Ruby necesarias para el funcionamiento de la aplicación, para generarlo introduce el siguiente código en tu terminal 
+
+```sh
+$ rails generate controller words
+```
+
+En esta parte revisa el concepto de [Controlador](controllers.pdf).
+
+#### Base de datos
+Utilizaremos para poblar nuestra base de datos el diccionario incorporado de tu computadora, el cual puedes copiar al escritorio pegando y ejecutando el siguiente código en la terminal:
+
+```sh
+$ cp /usr/share/dict/words .
+```
+
+El archivo que ahora está en tu escritorio, `words` deberás copiarlo a la carpeta raiz de tu proyecto, utilizaremos el siguiente método dentro del archivo `/db/seeds.rb` el cual leerá el diccionario e irá convirtiendo las palabras a su forma canonica para guardarlos en tu base de datos.
+
+```ruby
+def canonical_maker(word)
+  word.downcase.chars.sort.join
+end
+
+File.open("words").each do |line|
+  line.each_line do |word|
+    canonical = canonical_maker(word.chomp)
+    Word.create!(word: word.chomp, canonical: canonical)
+  end
+end
+```
+
+Una vez que hemos terminado este proceso, procedemos a correr en la terminal el comando que se encargará de llenar tu base de datos:
+
+```sh
+$ rake db:seed
+```
+
+#### Vistas
+Para esta aplicación utilizaremos 2 vistas distintas, un `home` que será nuestra página inicial y contendrá el formulario de HTML para consultar una palabra y una página `anagrams` que mostrará los resultados encontrados por nuestro programa. Para esto necesitarás ubicar la ruta `/app/views/words/` y crear los archivos `home.html.erb` y `new_word.html.erb`
+
+En esta parte revisa el concepto de [Vistas](views.pdf).
+
+### Creando la aplicación
+
+El primer paso para que nuestra aplicación funcione fue ejecutar la migración, lo cual creará en la base de datos la estructura señalada en la creación del modelo.
+
+Ahora que ya tenemos nuestra estructura de archivos definida vamos a comenzar a empezar con el código que generará las funcionalidades de nuestro programa, empezando por crear una forma de HTML para recibir del usuario una palabra.
+
+En tu controlador `words_controller` crearemos el método `home` el cual se encargará de crear una variable en la cual almacenaremos los datos presentados por el usuario:
+
+```ruby
+def home
+	@word = Word.new
+end
+```
+
+Para lograr esto debes ubicarte en tu archivo `home.html.erb` y pegar el siguiente código que contiene un mensaje de bienvenida a la aplicación y el formulario que solicita una palabra al usuario:
+
+```html
+<h1>Welcome to Anagrams</h1>
+
+<%= form_tag ("/anagrams"), method: "post" do %>
+
+	<%= label_tag(:new_word, "Search anagrams:")  %>
+  <%= text_field_tag (:new_word) %>
+
+  <%= submit_tag ("Submit") %>
+
+<% end %>
+```
+
+####routes
+Si probaras tu aplicación en este momento obtendrías un error en las rutas, esto es porque no especificamos cual será el archivo en el que inicie por default la aplicación, esto lo haremos en `/config/routes.rb` agregando la siguiente linea:
+
+```ruby
+root 'words#home'
+```
+
+Esto le indicará a la aplicación que al entrar a ella se accederá al controlador `words` en su metodo `home`el cual al terminar lleva directamente a la página `home.html.erb`
+
+Luego para recibir las respuestas a estos pedidos debemos generar un metodo que procese la información del formulario, el primero paso será definir nuestra ruta en el mismo archivo `routes.rb` de la siguiente manera:
+
+```ruby
+post '/anagrams' => 'words#new_word'
+```
+
+En ella indicamos que el formulario utiliza el metodo `post` y manda a llamar a la función `new_word` del controlador `words`, ahora debemos ir al controlador y agregar dicha función de la siguiente manera:
+
+```ruby
+def new_word
+	@new_word = params[:new_word]
+	@anagrams = anagrams_maker(@new_word)
+end
+```
+
+Dentro de esta función estamos mandado a llamar al método `anagrams_maker` que lleva como argumento la variable `new_word` que es la palabra que mandó el usuario en el formulario, para crear esta función añadiremos este código al mismo controlador:
+
+```ruby
+def anagrams_maker(word)
+  word = canonical(word)
+  anagrams = Word.where("canonical = ?", word)
+end
+```
+
+Este método se encarga de consultar la base de datos con el objetivo de encontrar palabras que en su forma canonica sean iguales a la ingresada por el usuario, para checar se utiliza la siguiente función que también debes añadir a tu controlador:
+
+```ruby
+def canonical(word)
+  word.downcase.chars.sort.join
+end
+```
+
+Con esto tu controlador ya sabe como acceder al modelo para obtener las palabras, como leer una palabra enviada por el usuario, como comprobar si una palabra es anagrama de otra y regresar estas en un arreglo, el ultimo paso será desplegar estos resultados, para ello utilizaremos el siguiente código en tu archivo `new_word.html.erb`
+
+```html
+<h1>Welcome to Anagrams</h1>
+
+<%= form_tag ("/anagrams"), method: "post" do %>
+
+	<%= label_tag(:new_word, "Search anagrams:")  %>
+  <%= text_field_tag (:new_word) %>
+
+  <%= submit_tag ("Submit") %>
+
+<% end %>
+
+<h1>Finded Anagrams!</h1>
+
+<% if @anagrams.length > 1 %>
+  <p>These are anagrams for <%= @new_word %>:</p>
+  
+  <ul>
+	  <% @anagrams.each do |word|%>
+	  
+	      <li><%= word.word %></li>
+	  <% end %>
+	</ul>
+
+<% else %>
+
+  <p> Sorry, no anagrams for this word. </p>
+
+<% end %>
+```
+
+En esta parte revisa el concepto de [Routes](routes.pdf).
+
+En este utilizamos el mismo formulario de la página anterior y bajo el encabezado de los anagramas encontrados si existen anagramas se itera sobre ellos para imprimirlos en pantalla, en caso de que no se desplega un aviso al usuario, para poner en marcha tu aplicación inicia tu servidor e ingresa a [`http://localhost:3000`](http://localhost:3000) para verla en funcionamiento.
+
+En esta parte revisa el concepto de [AssetPipeline](asset-pipeline.pdf).
+
+
+</xmp>
+<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>

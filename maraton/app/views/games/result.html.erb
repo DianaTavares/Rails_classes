@@ -1,0 +1,32 @@
+<%user=User.find(session[:user_id])%>
+<h1><%=user.name%>, tu resultado de este juedo fue:</h1>
+
+<br>
+
+<p class="result">Jugaste con el Deck <b>"<%=@new_game.deck.name%>"</b>, y obtuviste <b><%=@new_game.correct_answer%></b> respuestas correctas de <b><%=@new_game.deck.cards.count%></b> preguntas.</p>
+
+<br>
+<h3>Todos los resultados de <%=user.name%> jugando con Maraton!!:</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Deck usado</th>
+      <th>Respuestas correctas</th>
+      <th>Total de preguntas</th>
+      <th>Fecha del juego</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%@games.reverse.each do |game|%>
+    <tr>
+      <td><%=game.deck.name%></td>
+      <td><%=game.correct_answer%> </td>
+      <td><%=game.deck.cards.count%> </td>
+    <td><%=game.created_at%></td>
+    </tr>
+    <%end%>
+  </tbody>
+</table>
+<br>
+<%= link_to "Volver a jugar", profile_path(session[:user_id]) %> <br>
+<%= link_to "Logout", log_out_path %>

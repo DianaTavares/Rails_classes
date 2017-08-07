@@ -1,0 +1,18 @@
+<h1>Elige un Deck</h1>
+
+<div id="container">
+  <%user=User.find(session[:user_id])%>
+<p> Hola!! <%= user.name  %></p>
+
+<p> Elige un Deck :</p>
+<% @decks.each do |deck| %>
+  <%= link_to deck.name, new_game_path(deck) %><br>
+<% end %>
+<br>
+<br>
+
+<%= link_to "Logout", log_out_path %>
+
+
+
+</div>

@@ -1,0 +1,29 @@
+<div class="jumbotron">
+    <h1>Escribe las preguntas que tendrá tu Deck</h1>
+</div>
+<%= form_for :decks, url: create_card_path do |f| %>
+  <%= f.label :question, 'Escribe la pregunta' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :question %><br>
+      <br>
+      <p> Opciones de respuesta:</p>
+      <%= f.label :answer1, 'opcion 1:' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :answer1 %><br>
+      <br>
+      <%= f.label :answer2, 'opcion 2:' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :answer2 %><br>
+      <br>
+      <%= f.label :answer3, 'opcion 3:' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :answer3 %><br>
+      <br>
+      <%= f.label :correct_answer, 'Respuesta correcta' %>  &nbsp  &nbsp  &nbsp
+      <%= f.text_field :correct_answer %><br>
+
+      <%= f.hidden_field :deck_id, :value => @new_deck.id %><br>
+
+      <br>
+    <%= f.submit "Guardar y crear nueva carta"%>
+<% end %>
+<br>
+<div class="btn btn-default">
+  <%= link_to 'Terminar', controller:"users", action: "index" %>
+</div>

@@ -1,0 +1,18 @@
+<%user=User.find(session[:user_id])%>
+<h1><%= user.name  %>, selecciona la capital de los siguientes estados:</h1>
+<%counter = 1%>
+<%= form_for(@game) do |f| %>
+  <%@cards.each do |card|%>
+    <fieldset id="<%=counter%>">
+          <label for="<%=card.question%>"><%=card.question%>:</label>
+          <% [ card.answer1, card.answer2, card.answer3].each do |answer| %>
+            <br><%= radio_button_tag counter, answer %>
+            <%= answer %>
+          <% end %>
+          <%counter += 1%>
+    </fieldset>
+    <%= f.hidden_field :deck_id, :value => card.deck_id %>
+  <% end %>
+  </br>
+  <%= f.submit "Enviar Respuestas" %>
+<% end %>

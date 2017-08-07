@@ -1,0 +1,241 @@
+<xmp theme="united" style="display:none;">
+
+#Bitly with Rails
+
+## Introducción
+
+Ruby on Rails es un framework de desarrollo web que fue creado sobre Ruby. Estas herramientas están diseñadas para hacer aplicaciones web de manera sencilla al manejar una estructura y lenguaje muy fácil de entender, permitiendo escribir menos código y resultados más rápidos. La filosofía de Rails se basa en dos principios:
+
+- **Don't repeat yourself:** Se trata de crear código reusable que puede ser mantenible, extensivo y menos propenso a errores.
+- **Convention Over Configuration:** Es una idea que establece que no tiene mucho sentido preocuparse por la configuración, sino que siguiendo las convenciones puedes enfocarte primordialmente en desarrollar código y resolver problemas.
+
+## Bitly
+
+¿Alguna vez has utilizado [Bitly](https://bitly.com/)?. Esta es una aplicación muy usada en Twitter para reducir el tamaño de una url.
+
+En este ejercicio crearemos nuestra propia app tipo Bitly. ¿Tienes alguna idea de cómo podemos diseñar e implementar esta app?. No tiene mucha ciencia ya lo verás.
+
+Antes de empezar te recomendamos que si no estás familiarizado con Bitly, úsalo para que comprendas su funcionamiento.   
+
+## Objetivos Académicos
+
+- Comprender cómo funciona un `redirect` en HTTP
+- Utilizar `Active Record callbacks`
+- Aplicar validaciones
+
+En esta parte revisa el concepto de [ActiveRecord](active-record.pdf). 
+
+## Actividades
+
+Iremos paso a paso para crear nuestra app desde 0 usando MVC.
+
+### Creando nuestra app en Rails
+
+Crea tu aplicación con el siguiente comando
+
+`$ rails new bitly`
+
+Se crea una carpeta que contiene todos los archivos que nuestra app necesita (esqueleto). Navega a tu app con:
+
+`$ cd /path/to/your/app`
+
+Ejecuta `$ bundle install`, esto lee el archivo Gemfile, el cual contiene las gemas que utilizaremos en nuestro proyecto. Una gema es una librería que contiene código que ejecuta ciertas funcionalidades y que alguien más ya desarrolló por nosotros.
+
+Para poder ver nuestra aplicación en el navegador tenemos que levantar el servidor web que se encargará de escuchar todas las peticiones que lleguen a el.
+
+Te recomiendo abrir una nueva pestaña de la consola para levantar el servidor, puesto que como escucha todas las peticiones, no podemos correr ningún comando ahí.
+
+`$ rails server`
+
+Abre tu navegador y ve a la siguiente url: [`localhost:3000`](localhost:3000). Ahí podrás ver tu aplicación (sin absolutamente nada ahorita  )
+
+### Model y DB
+
+Sólamente haremos uso de un recurso: `Urls`. Toma en cuenta que deberás tener dos columnas en tu Base de Datos (DB), una donde guardaremos la URL original (`long_url`) y otra donde guardaremos la URL convertida (`short_url`).
+
+Para generar el modelo ejecuta el siguiente comando
+
+`$ rails generate model url long_url:string short_url:string`
+
+Aquí le estamos especificando que nuestro modelo se llama Url, con dos atributos `long_url` y `short_url` los dos de tipo `string`.
+
+Esto genera nuestro modelo en `/app/models/url.rb`. Accede al archivo y agrega:
+
+```ruby
+before_create :convert_url
+
+def convert_url
+  abecedario = ("A".."Z").to_a + ("a".."z").to_a + (0..9).to_a
+  short = abecedario.sample(6).join
+  self.short_url = short
+end
+```
+
+A esto se le llama `callback` y significa que antes de crear cualquier objeto de la clase `Url` y guardarla en la DB, vamos a convertir una `long_url` a `short_url` para después poder guardarla en la DB. Básicamente a partir de `long_url` vamos a crear nuestra `short_url`.
+
+En esta parte revisar el concepto de [CallBack](http://guides.rubyonrails.org/active_record_callbacks.html).
+
+Cuando interactuamos con una DB, ya sea para crear una tabla, agregar una columna, etc. lo hacemos por medio de migraciones. Vamos a agregar una columna a nuestra tabla `urls` que nos servirá para llevar un control de las veces que hemos dado click en una url.
+
+```sh
+$ rails generate migration add_column_to_urls click_count:integer
+```
+
+Las migraciones se crean en `/db/migrate/name_of_migration`. Ve a la migración que acabas de crear y en la línea que dice `add_column :urls, :click_count, :integer` agrégale `, default: 0`.
+
+Una vez que hayas terminado de generar las migraciones debes ejecutar el siguiente comando en tu terminal para interactuar con la base de datos:
+
+```sh
+$ rake db:migrate
+```
+### Creando las rutas
+
+Dentro del archivo `/config/routes.rb` agrega:
+
+```ruby
+root "welcome#home" #Raíz, ejecuta la acción home del controlador welcome
+
+resources :urls #Crea todas las rutas de nuestro recurso urls
+
+match 'bit.ly/:url', to: 'urls#url', via: 'get', as: 'real_url'
+# Creamos una ruta personalizada
+```
+
+Si quieres checar cuáles son la rutas de tu aplicación, ejecuta: `$ rake routes` en la consola.
+
+### Controller
+
+Vamos a crear dos controladores, `welcome_controller` y `urls_controller`. El controlador `welcome` tendrá el home de nuestra aplicación y el controlador `urls` tendrá la lógica de la creación de nuestras urls.
+Cuando generamos controladores, éstos son puestos en: `/app/controllers/name_controller.rb`
+
+#### Welcome Controller
+
+Crea el controlador con
+
+```sh
+$ rails generate controller welcome
+```
+
+Dentro de tu controlador, agrega la siguiente acción
+
+```ruby
+def home
+  @urls = Url.all
+end
+```
+
+Por default, una acción dentro de un controlador ejecuta una vista con el mismo nombre. Nuestra acción `home` manda a llamar (renderea) la vista `/app/views/welcome/home.html.erb`. En este punto no hemos creado ninguna vista, así que tenemos que ir y crear tanto el folder como el archivo.
+
+Como dice el ejemplo, dentro del folder `/app/views/` crea el folder y el archivo `/welcome/home.html.erb`.
+Dentro agrega
+
+```
+<h1>BITLY</h1>
+
+<%= render "shared/error_messages" %>
+
+<%= form_for :url, url: { controller: :urls, action: :create } do |f| %>
+  <%= f.text_field :long_url %>
+  <%= f.submit "Convertir" %>
+<% end %>
+
+<h2>Lista de urls</h2>
+<% if @urls.any? %>
+  <table>
+    <tr>
+      <th>URL</th>
+      <th>bitly</th>
+    </tr>
+  <% @urls.each do |url| %>
+    <tr>
+      <td><%= url.long_url %></td>
+      <td><%= link_to "bit.ly/#{url.short_url}", real_url_path(url.short_url) %></td>
+    </tr>
+  <% end %>
+</table>
+<% else %>
+  <h3>No tienes urls</h3>
+<% end %>
+```
+
+#### Url Controller
+
+Crea el controlador:
+
+```sh
+$ rails generate controller urls
+```
+
+Dentro de tu controlador agrega
+
+```ruby
+def create
+  @url = Url.new(url_params)
+  if @url.save
+    redirect_to root_path
+  else
+    @message = "URL no creada"
+    @urls = Url.all
+    render :template => 'welcome/home'
+  end
+end
+
+def url
+  url = Url.find_by(short_url: params[:url])
+  url.click_count += 1
+  url.save!
+
+  redirect_to url.long_url
+end
+
+private
+
+  def url_params
+    params.require(:url).permit(:long_url)
+  end
+```
+
+Cabe destacar que nuestra aplicación tiene una sola vista (home.html.erb), la cual pertenece al controlador `welcome`. Nuestro controlador `urls` no hace más que la lógica y siempre redirecciona a una misma vista.
+
+### Validaciones
+
+Una validación significa que vamos a checar que algo dentro de nuestra aplicación cumpla con ciertos requisitos. En este caso que nuestro atributo long_url cumpla con el requisito que debe ser una url válida (contener el protocolo http:// para poder ser creada).
+
+En esta parte revisa el concepto de [ActiveRecord validations](http://guides.rubyonrails.org/active_record_validations.html).
+
+A tu modelo `Url`, agrega las siguienes líneas:
+
+```ruby
+validate :correct_url
+
+def correct_url
+  if !self.long_url.start_with?("http://")
+    errors.add(:long_url, "no comienza con http://")
+  end
+end
+```
+
+Para poder mostrar si es que existe un error al crear una url, vamos a agregar un `partial` que se va a encargar de mostrar o no, los posibles errores que existan.
+
+Para entender [vistas parciales, rendering y layouts](http://guides.rubyonrails.org/layouts_and_rendering.html).
+
+Como es parte de una vista, vamos a crear dentro de `/app/views/` el folder y el archivo `/shared/_error_messages.html.erb`.
+
+Dentro agrega:
+
+```
+<% if @url %>
+  <% if @url.errors.any? %>
+    <h1><%= @message %></h1>
+    <ul>
+      <% @url.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+```
+
+
+</xmp>
+<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>

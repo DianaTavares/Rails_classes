@@ -1,0 +1,24 @@
+<%user=User.find(session[:user_id])%>
+<h1><%= user.name  %>, selecciona la capital de los siguientes estados:</h1>
+<%counter = 1%>
+<%@cards.each do |card|%>
+  <form action="/review_answers" method="post">
+    <fieldset id="<%=counter%>">
+      <h3><%=card.question%></h3>
+
+      <input type="radio" value="<%= card.answer1%>" name="<%=counter%>" ><%= card.answer1%>
+
+      <input type="radio" value="<%= card.answer2%>" name="<%=counter%>" ><%= card.answer2%>
+
+      <input type="radio" value="<%= card.answer3%>" name="<%=counter%>" ><%= card.answer3%>
+      <%counter += 1%>
+      <br><br>
+      <input type="hidden" value="<%=card.deck_id%>" name="deck_id">
+    </fieldset>
+    <br>
+  <% end %>
+    <br>
+    <div>
+      <button type="submit">Enviar</button>
+    </div>
+  </form>

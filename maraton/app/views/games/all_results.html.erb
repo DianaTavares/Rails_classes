@@ -1,0 +1,23 @@
+<h3>Todos los resultados de Maraton!!</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nombre del Jugador</th>
+      <th>Deck usado</th>
+      <th>Respuestas correctas</th>
+      <th>Total de preguntas</th>
+      <th>Fecha del juego</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%@games.reverse.each do |game|%>
+    <tr>
+      <td><%=game.user.name%></td>
+      <td><%=game.deck.name%></td>
+      <td><%=game.correct_answer%> </td>
+      <td><%=game.deck.cards.count%> </td>
+    <td><%=game.created_at%></td>
+    </tr>
+    <%end%>
+  </tbody>
+</table>

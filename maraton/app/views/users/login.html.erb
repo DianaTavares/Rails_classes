@@ -1,0 +1,18 @@
+<h1>Hola, inicia sesion para poder jugar</h1>
+
+<%if flash[:mensaje]%>
+  <p class="mensaje"><%=flash[:mensaje]%></p>
+<% end %>
+
+<div id="container" >
+<%= form_for :users, url: login_validator_path do |f| %>
+  <%= f.label :email %>  &nbsp  &nbsp  &nbsp
+      <%= f.email_field :email %><br>
+  <p></p>
+  <%= f.label :password %>
+   <%= f.password_field :password %><br>
+   <p></p>
+  <p></p>
+  <%= f.submit "iniciar sesión" %>
+  <% end %>
+</div>

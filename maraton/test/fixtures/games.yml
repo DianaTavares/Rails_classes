@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  correct_answer: 1
+  user: one
+  deck: one
+
+two:
+  correct_answer: 1
+  user: two
+  deck: two
