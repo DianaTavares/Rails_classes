@@ -1,0 +1,16 @@
+<header>
+  <img id ="logo" src="codea-logo.png">
+</header>
+
+<h1>Slot Machine</h1>
+
+<div id="slot-machine">
+  <!-- el remote true es para indicarle que busque un archivo js -->
+  <%= form_for :users, url: rolls_path, :remote => true do |f|%>
+    <%= f.submit "SPIN", :id => 'submit'%>
+  <% end %>
+  <div id="die">
+    <%= render "die_roll"%>
+  </div>
+
+</div>
