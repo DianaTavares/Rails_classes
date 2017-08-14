@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="jumbotron">
+    <h1>El vuelo seleccionado es:</h1>
+  </div>
+<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <td>     VUELO #        </td>
+        <th> <%=@flight.id %> </th>
+        <td>     DE       </td>
+        <th> <%=@flight.from%> </th>
+        <td>     A:       </td>
+        <th> <%=@flight.to %> </th>
+        <td>     FECHA:    </td>
+        <th> <%=@flight.depart.strftime('%d-%m-%Y') %></td>
+        <td>     HORA DE SALIDA   </td>
+        <th> <%=@flight.depart.strftime('%I:%M') %> </td>
+        <td>     COSTO    </td>
+        <th> $<%=@flight.cost %>0 </td>
+      </tr>
+    </thead>
+  </table>
+  <%= link_to "Agregar pasajeros",  new_user_path, remote: true, class: "btn btn-primary" %>
+  <br><br>
+  <div class="reserve">
+    <h5>Nombre de los pasajero en la reserva numero <%= @booking.id%></h5>
+    <div class="user-index">
+      <%= render "index" %>
+      <div id="show"></div>
+    </div>
+  </div>
+  <%= link_to "Pagar",  users_pay_path, remote: true, class: "btn btn-success" %>
+</div>
+<div class="user-pay">
+  <div id="pay"></div>
+</div>

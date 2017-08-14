@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="jumbotron">
+      <h1> Se ha realizado el pago correctamente! </h1>
+    </div>
+    <h2>Datos de la reservación </h2>
+    <p> Numero de reservacion <%= @booking.id %>
+    <p> Responsable de la reservación: <b> <%= @user_responsable.name %> </b> </p>
+    <p> Nombre de los viajeros: </p>
+    <ul>
+      <% @users_booking.each do |user| %>
+          <li> <%= user.name %> </li>
+      <% end %>
+    </ul>
+    <p> Total pagado <%= @booking.total %> </P>
+    <br>
+    <h4> Información del vuelo </h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <td>     VUELO #        </td>
+            <th> <%=@flight.id %> </th>
+            <td>     DE       </td>
+            <th> <%=@flight.from%> </th>
+            <td>     A:       </td>
+            <th> <%=@flight.to %> </th>
+            <td>     FECHA:    </td>
+            <th> <%=@flight.depart.strftime('%d-%m-%Y') %></td>
+            <td>     HORA DE SALIDA   </td>
+            <th> <%=@flight.depart.strftime('%I:%M') %> </td>
+            <td>     COSTO POR BOLETO    </td>
+            <th> $<%=@flight.cost %>0 </td>
+          </tr>
+        </thead>
+      </table>
+      <h4>Gracias por su preferencia! Que tenga un excelente viaje :D </h4>
+      <%= link_to "Inicio", root_path %>
+  </div>

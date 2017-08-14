@@ -1,0 +1,26 @@
+<div class="container">
+<div class="jumbotron">
+  <h1>Bienvenido a Vuelos.com</h1>
+</div>
+
+<h3> Busca el vuelo que necesitas</h3>
+<!-- Usamos un form_tag para aceder a la informacion que tiene el controlador -->
+<%= form_tag(flight_options_path, method: "get") do %>
+  <div class="form-group col-md-12 rm-p">
+    <%= label_tag(:from, "Saliendo de:") %>
+    <%= select_tag(:from, options_for_select(@froms.collect{ |u| [u, u] }), class: "form-control") %>
+  </div>
+  <div class="form-group col-md-12 rm-p">
+    <%= label_tag(:to, "Llegando a:") %>
+    <%= select_tag(:to, options_for_select(@tos.collect{ |u| [u, u] }), class: "form-control") %>
+  </div>
+  <div class="form-group col-md-12 rm-p">
+    <%= label_tag(:date, "Fecha de viaje:") %>
+    <%= select_tag(:date, options_for_select(@dates.collect{ |u| [u, u] }), class: "form-control") %>
+  </div>
+  <div class="form-group col-md-12 rm-p">
+    <%= label_tag(:passangers, "Numero de pasajeros:") %>
+    <%= select_tag(:passangers, options_for_select((1..5).collect{ |u| [u, u] }), class: "form-control") %>
+  </div>
+  <%= submit_tag "Buscar vuelo!", class: "btn btn-primary col-md-offset-1" %>
+<% end %>

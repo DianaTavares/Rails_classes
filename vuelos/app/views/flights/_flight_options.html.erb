@@ -1,0 +1,11 @@
+<% @flights_options.each do |option| %>
+  <tr>
+    <td><%= option.id %></td>
+    <td><%= option.depart.strftime('%d-%B-%Y') %></td>
+    <td><%= option.depart.strftime('%I:%M %p') %></td>
+    <td><%= option.duration %></td>
+    <td>$<%= option.cost %>0</td>
+    <td><%= option.available_seats%></td>
+    <td><%= link_to "Seleccionar este!", users_index_path(option.id), class: "btn btn-default" %></td>
+  </tr>
+<% end %>

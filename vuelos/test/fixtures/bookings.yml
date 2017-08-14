@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  totla: 9.99
+  flight: one
+
+two:
+  totla: 9.99
+  flight: two

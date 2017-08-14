@@ -1,0 +1,10 @@
+$('#show').html("<%=escape_javascript render 'new' %>");
+
+<% p session[:counter] += 1 %>
+<%= p session[:passangers].to_i %>
+console.log("Estoy en create.js " );
+<%  if session[:counter] > session[:passangers].to_i %>
+  console.log("funciona js")
+  $(".user-index").html("<%= escape_javascript(render 'index') %>")
+  $( "#show" ).hide();
+<% end %>

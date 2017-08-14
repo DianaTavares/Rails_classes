@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2017-08-09
+  depart: 2017-08-09 13:45:19
+  from: MyString
+  to: MyString
+  cost: 9.99
+  passengers: 1
+
+two:
+  date: 2017-08-09
+  depart: 2017-08-09 13:45:19
+  from: MyString
+  to: MyString
+  cost: 9.99
+  passengers: 1

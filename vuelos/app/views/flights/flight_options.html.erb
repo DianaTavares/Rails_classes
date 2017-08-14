@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="jumbotron">
+    <h1>Selecciona la opcion de Vuelo de:</h1>
+    <h1 class="destination"> <%= @from %> a <%= @to %> </h1>
+  </div>
+<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Numero de Vuelo</th>
+        <th>Fecha</th>
+        <th>Hora de salida</th>
+        <th>Duracion</th>
+        <th>Precio</th>
+        <th>Lugares disponibles</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody class="product-index">
+      <%= render "flight_options" %>
+    </tbody>
+</table>

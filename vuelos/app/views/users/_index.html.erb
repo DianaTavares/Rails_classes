@@ -1,0 +1,23 @@
+<br>
+<%users = User.all%>
+<%@users_booking = []%>
+<%users.each do |user|%>
+  <%user_bookings = user.bookings%>
+  <%if user_bookings.length != 0%>
+    <%user_bookings.each do |user_booking|%>
+      <%if user_booking.id == session[:booking_id]%>
+        <%@users_booking << user%>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<%if @users_booking%>
+  <% @users_booking.each do |user| %>
+      <p> - <%= user.name %> </p>
+  <% end %>
+  <%p "mms"*50%>
+  <%p @booking = Booking.find(session[:booking_id])%>
+  <h4>Total a pagar = <%= @booking.total%></h4>
+  <br>
+  <br>
+<% end %>
